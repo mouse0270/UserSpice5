@@ -25,6 +25,15 @@ if (file_exists($abs_us_root.$us_url_root.'usersc/includes/custom_functions.php'
   require_once $abs_us_root.$us_url_root.'usersc/includes/custom_functions.php';
 }
 
+$usplugins = parse_ini_file($abs_us_root.$us_url_root.'usersc/plugins/plugins.ini.php', true);
+foreach ($usplugins as $k => $v) {
+  if ($v == 1) {
+    if (file_exists($abs_us_root.$us_url_root.'usersc/plugins/'.$k.'/functions.php')) {
+      include $abs_us_root.$us_url_root.'usersc/plugins/'.$k.'/functions.php';
+    }
+  }
+}
+
 require_once $abs_us_root.$us_url_root.'users/helpers/us_helpers.php';
 require_once $abs_us_root.$us_url_root.'users/helpers/backup_util.php';
 require_once $abs_us_root.$us_url_root.'users/helpers/class.treeManager.php';
@@ -36,13 +45,15 @@ require_once $abs_us_root.$us_url_root.'users/helpers/dbmenu.php';
 define('ABS_US_ROOT', $abs_us_root);
 define('US_URL_ROOT', $us_url_root);
 
+if (file_exists($abs_us_root.$us_url_root.'usersc/vendor/autoload.php')) {
+  require_once $abs_us_root.$us_url_root.'usersc/vendor/autoload.php';
+}
+
 if (file_exists($abs_us_root.$us_url_root.'users/vendor/autoload.php')) {
   require_once $abs_us_root.$us_url_root.'users/vendor/autoload.php';
 }
 
-if (file_exists($abs_us_root.$us_url_root.'usersc/vendor/autoload.php')) {
-  require_once $abs_us_root.$us_url_root.'usersc/vendor/autoload.php';
-}
+
 
 require $abs_us_root.$us_url_root.'users/classes/phpmailer/PHPMailerAutoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
@@ -300,16 +311,7 @@ if (!function_exists('redirect')) {
   }
 }
 
-//PLUGIN Hooks
-$usplugins = parse_ini_file($abs_us_root.$us_url_root.'usersc/plugins/plugins.ini.php', true);
-foreach ($usplugins as $k => $v) {
-  if ($v == 1) {
-    if (file_exists($abs_us_root.$us_url_root.'usersc/plugins/'.$k.'/functions.php')) {
-      include $abs_us_root.$us_url_root.'usersc/plugins/'.$k.'/functions.php';
-    }
-  }
-}
-
+//PLUGIN Stuff
 if (!function_exists('write_ini_file')) {
   function write_php_ini($array, $file)
   {
